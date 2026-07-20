@@ -1,0 +1,200 @@
+{"timestamp": "2026-06-13T08:00:00+00:00", "service": "auth-service", "level": "WARN", "message": "[auth-service] WARN Connection retry attempt {n} to postgres-primary \u2014 timeout, will retry"}
+{"timestamp": "2026-06-13T08:00:12+00:00", "service": "payments-api", "level": "INFO", "message": "[payments-api] INFO Transaction batch processed batchId=1001 records=51"}
+{"timestamp": "2026-06-13T08:00:24+00:00", "service": "kyc-worker", "level": "INFO", "message": "[kyc-worker] INFO Transaction batch processed batchId=1002 records=52"}
+{"timestamp": "2026-06-13T08:00:36+00:00", "service": "ledger-service", "level": "INFO", "message": "[ledger-service] INFO Transaction batch processed batchId=1003 records=53"}
+{"timestamp": "2026-06-13T08:00:48+00:00", "service": "notification-hub", "level": "INFO", "message": "[notification-hub] INFO Transaction batch processed batchId=1004 records=54"}
+{"timestamp": "2026-06-13T08:01:00+00:00", "service": "auth-service", "level": "WARN", "message": "[auth-service] WARN Connection retry attempt {n} to postgres-primary \u2014 timeout, will retry"}
+{"timestamp": "2026-06-13T08:01:12+00:00", "service": "payments-api", "level": "INFO", "message": "[payments-api] INFO Transaction batch processed batchId=1006 records=56"}
+{"timestamp": "2026-06-13T08:01:24+00:00", "service": "kyc-worker", "level": "INFO", "message": "[kyc-worker] INFO Transaction batch processed batchId=1007 records=57"}
+{"timestamp": "2026-06-13T08:01:36+00:00", "service": "ledger-service", "level": "INFO", "message": "[ledger-service] INFO Transaction batch processed batchId=1008 records=58"}
+{"timestamp": "2026-06-13T08:01:48+00:00", "service": "notification-hub", "level": "INFO", "message": "[notification-hub] INFO Transaction batch processed batchId=1009 records=59"}
+{"timestamp": "2026-06-13T08:02:00+00:00", "service": "auth-service", "level": "WARN", "message": "[auth-service] WARN Connection retry attempt {n} to postgres-primary \u2014 timeout, will retry"}
+{"timestamp": "2026-06-13T08:02:12+00:00", "service": "payments-api", "level": "INFO", "message": "[payments-api] INFO Transaction batch processed batchId=1011 records=61"}
+{"timestamp": "2026-06-13T08:02:24+00:00", "service": "kyc-worker", "level": "INFO", "message": "[kyc-worker] INFO Transaction batch processed batchId=1012 records=62"}
+{"timestamp": "2026-06-13T08:02:36+00:00", "service": "ledger-service", "level": "INFO", "message": "[ledger-service] INFO Transaction batch processed batchId=1013 records=63"}
+{"timestamp": "2026-06-13T08:02:48+00:00", "service": "notification-hub", "level": "INFO", "message": "[notification-hub] INFO Transaction batch processed batchId=1014 records=64"}
+{"timestamp": "2026-06-13T08:03:00+00:00", "service": "auth-service", "level": "WARN", "message": "[auth-service] WARN Connection retry attempt {n} to postgres-primary \u2014 timeout, will retry"}
+{"timestamp": "2026-06-13T08:03:12+00:00", "service": "payments-api", "level": "INFO", "message": "[payments-api] INFO Transaction batch processed batchId=1016 records=66"}
+{"timestamp": "2026-06-13T08:03:24+00:00", "service": "auth-service", "level": "CRITICAL", "message": "[auth-service] CRITICAL password=Sup3rS3cret! logged during auth debug"}
+{"timestamp": "2026-06-13T08:03:36+00:00", "service": "ledger-service", "level": "INFO", "message": "[ledger-service] INFO Transaction batch processed batchId=1018 records=68"}
+{"timestamp": "2026-06-13T08:03:48+00:00", "service": "notification-hub", "level": "INFO", "message": "[notification-hub] INFO Transaction batch processed batchId=1019 records=69"}
+{"timestamp": "2026-06-13T08:04:00+00:00", "service": "auth-service", "level": "WARN", "message": "[auth-service] WARN Connection retry attempt {n} to postgres-primary \u2014 timeout, will retry"}
+{"timestamp": "2026-06-13T08:04:12+00:00", "service": "payments-api", "level": "INFO", "message": "[payments-api] INFO Transaction batch processed batchId=1021 records=51"}
+{"timestamp": "2026-06-13T08:04:24+00:00", "service": "kyc-worker", "level": "INFO", "message": "[kyc-worker] INFO Transaction batch processed batchId=1022 records=52"}
+{"timestamp": "2026-06-13T08:04:36+00:00", "service": "ledger-service", "level": "INFO", "message": "[ledger-service] INFO Transaction batch processed batchId=1023 records=53"}
+{"timestamp": "2026-06-13T08:04:48+00:00", "service": "notification-hub", "level": "INFO", "message": "[notification-hub] INFO Transaction batch processed batchId=1024 records=54"}
+{"timestamp": "2026-06-13T08:05:00+00:00", "service": "auth-service", "level": "WARN", "message": "[auth-service] WARN Connection retry attempt {n} to postgres-primary \u2014 timeout, will retry"}
+{"timestamp": "2026-06-13T08:05:12+00:00", "service": "payments-api", "level": "INFO", "message": "[payments-api] INFO Transaction batch processed batchId=1026 records=56"}
+{"timestamp": "2026-06-13T08:05:24+00:00", "service": "kyc-worker", "level": "INFO", "message": "[kyc-worker] INFO Transaction batch processed batchId=1027 records=57"}
+{"timestamp": "2026-06-13T08:05:36+00:00", "service": "ledger-service", "level": "INFO", "message": "[ledger-service] INFO Transaction batch processed batchId=1028 records=58"}
+{"timestamp": "2026-06-13T08:05:48+00:00", "service": "notification-hub", "level": "INFO", "message": "[notification-hub] INFO Transaction batch processed batchId=1029 records=59"}
+{"timestamp": "2026-06-13T08:06:00+00:00", "service": "auth-service", "level": "WARN", "message": "[auth-service] WARN Connection retry attempt {n} to postgres-primary \u2014 timeout, will retry"}
+{"timestamp": "2026-06-13T08:06:12+00:00", "service": "payments-api", "level": "INFO", "message": "[payments-api] INFO Transaction batch processed batchId=1031 records=61"}
+{"timestamp": "2026-06-13T08:06:24+00:00", "service": "kyc-worker", "level": "INFO", "message": "[kyc-worker] INFO Transaction batch processed batchId=1032 records=62"}
+{"timestamp": "2026-06-13T08:06:36+00:00", "service": "ledger-service", "level": "INFO", "message": "[ledger-service] INFO Transaction batch processed batchId=1033 records=63"}
+{"timestamp": "2026-06-13T08:06:48+00:00", "service": "notification-hub", "level": "INFO", "message": "[notification-hub] INFO Transaction batch processed batchId=1034 records=64"}
+{"timestamp": "2026-06-13T08:07:00+00:00", "service": "auth-service", "level": "WARN", "message": "[auth-service] WARN Connection retry attempt {n} to postgres-primary \u2014 timeout, will retry"}
+{"timestamp": "2026-06-13T08:07:12+00:00", "service": "payments-api", "level": "INFO", "message": "[payments-api] INFO Transaction batch processed batchId=1036 records=66"}
+{"timestamp": "2026-06-13T08:07:24+00:00", "service": "kyc-worker", "level": "INFO", "message": "[kyc-worker] INFO Transaction batch processed batchId=1037 records=67"}
+{"timestamp": "2026-06-13T08:07:36+00:00", "service": "ledger-service", "level": "INFO", "message": "[ledger-service] INFO Transaction batch processed batchId=1038 records=68"}
+{"timestamp": "2026-06-13T08:07:48+00:00", "service": "notification-hub", "level": "INFO", "message": "[notification-hub] INFO Transaction batch processed batchId=1039 records=69"}
+{"timestamp": "2026-06-13T08:08:00+00:00", "service": "auth-service", "level": "WARN", "message": "[auth-service] WARN Connection retry attempt {n} to postgres-primary \u2014 timeout, will retry"}
+{"timestamp": "2026-06-13T08:08:12+00:00", "service": "payments-api", "level": "INFO", "message": "[payments-api] INFO Transaction batch processed batchId=1041 records=51"}
+{"timestamp": "2026-06-13T08:08:24+00:00", "service": "kyc-worker", "level": "INFO", "message": "[kyc-worker] INFO Transaction batch processed batchId=1042 records=52"}
+{"timestamp": "2026-06-13T08:08:36+00:00", "service": "ledger-service", "level": "INFO", "message": "[ledger-service] INFO Transaction batch processed batchId=1043 records=53"}
+{"timestamp": "2026-06-13T08:08:48+00:00", "service": "notification-hub", "level": "INFO", "message": "[notification-hub] INFO Transaction batch processed batchId=1044 records=54"}
+{"timestamp": "2026-06-13T08:09:00+00:00", "service": "auth-service", "level": "WARN", "message": "[auth-service] WARN Connection retry attempt {n} to postgres-primary \u2014 timeout, will retry"}
+{"timestamp": "2026-06-13T08:09:12+00:00", "service": "payments-api", "level": "INFO", "message": "[payments-api] INFO Transaction batch processed batchId=1046 records=56"}
+{"timestamp": "2026-06-13T08:09:24+00:00", "service": "auth-service", "level": "CRITICAL", "message": "[auth-service] CRITICAL password=Sup3rS3cret! logged during auth debug"}
+{"timestamp": "2026-06-13T08:09:36+00:00", "service": "ledger-service", "level": "INFO", "message": "[ledger-service] INFO Transaction batch processed batchId=1048 records=58"}
+{"timestamp": "2026-06-13T08:09:48+00:00", "service": "notification-hub", "level": "INFO", "message": "[notification-hub] INFO Transaction batch processed batchId=1049 records=59"}
+{"timestamp": "2026-06-13T08:10:00+00:00", "service": "auth-service", "level": "WARN", "message": "[auth-service] WARN Connection retry attempt {n} to postgres-primary \u2014 timeout, will retry"}
+{"timestamp": "2026-06-13T08:10:12+00:00", "service": "payments-api", "level": "INFO", "message": "[payments-api] INFO Transaction batch processed batchId=1051 records=61"}
+{"timestamp": "2026-06-13T08:10:24+00:00", "service": "kyc-worker", "level": "INFO", "message": "[kyc-worker] INFO Transaction batch processed batchId=1052 records=62"}
+{"timestamp": "2026-06-13T08:10:36+00:00", "service": "ledger-service", "level": "INFO", "message": "[ledger-service] INFO Transaction batch processed batchId=1053 records=63"}
+{"timestamp": "2026-06-13T08:10:48+00:00", "service": "notification-hub", "level": "INFO", "message": "[notification-hub] INFO Transaction batch processed batchId=1054 records=64"}
+{"timestamp": "2026-06-13T08:11:00+00:00", "service": "auth-service", "level": "WARN", "message": "[auth-service] WARN Connection retry attempt {n} to postgres-primary \u2014 timeout, will retry"}
+{"timestamp": "2026-06-13T08:11:12+00:00", "service": "payments-api", "level": "INFO", "message": "[payments-api] INFO Transaction batch processed batchId=1056 records=66"}
+{"timestamp": "2026-06-13T08:11:24+00:00", "service": "kyc-worker", "level": "INFO", "message": "[kyc-worker] INFO Transaction batch processed batchId=1057 records=67"}
+{"timestamp": "2026-06-13T08:11:36+00:00", "service": "ledger-service", "level": "INFO", "message": "[ledger-service] INFO Transaction batch processed batchId=1058 records=68"}
+{"timestamp": "2026-06-13T08:11:48+00:00", "service": "notification-hub", "level": "INFO", "message": "[notification-hub] INFO Transaction batch processed batchId=1059 records=69"}
+{"timestamp": "2026-06-13T08:12:00+00:00", "service": "auth-service", "level": "WARN", "message": "[auth-service] WARN Connection retry attempt {n} to postgres-primary \u2014 timeout, will retry"}
+{"timestamp": "2026-06-13T08:12:12+00:00", "service": "payments-api", "level": "INFO", "message": "[payments-api] INFO Transaction batch processed batchId=1061 records=51"}
+{"timestamp": "2026-06-13T08:12:24+00:00", "service": "kyc-worker", "level": "INFO", "message": "[kyc-worker] INFO Transaction batch processed batchId=1062 records=52"}
+{"timestamp": "2026-06-13T08:12:36+00:00", "service": "ledger-service", "level": "INFO", "message": "[ledger-service] INFO Transaction batch processed batchId=1063 records=53"}
+{"timestamp": "2026-06-13T08:12:48+00:00", "service": "notification-hub", "level": "INFO", "message": "[notification-hub] INFO Transaction batch processed batchId=1064 records=54"}
+{"timestamp": "2026-06-13T08:13:00+00:00", "service": "auth-service", "level": "WARN", "message": "[auth-service] WARN Connection retry attempt {n} to postgres-primary \u2014 timeout, will retry"}
+{"timestamp": "2026-06-13T08:13:12+00:00", "service": "payments-api", "level": "INFO", "message": "[payments-api] INFO Transaction batch processed batchId=1066 records=56"}
+{"timestamp": "2026-06-13T08:13:24+00:00", "service": "kyc-worker", "level": "INFO", "message": "[kyc-worker] INFO Transaction batch processed batchId=1067 records=57"}
+{"timestamp": "2026-06-13T08:13:36+00:00", "service": "ledger-service", "level": "INFO", "message": "[ledger-service] INFO Transaction batch processed batchId=1068 records=58"}
+{"timestamp": "2026-06-13T08:13:48+00:00", "service": "notification-hub", "level": "INFO", "message": "[notification-hub] INFO Transaction batch processed batchId=1069 records=59"}
+{"timestamp": "2026-06-13T08:14:00+00:00", "service": "auth-service", "level": "WARN", "message": "[auth-service] WARN Connection retry attempt {n} to postgres-primary \u2014 timeout, will retry"}
+{"timestamp": "2026-06-13T08:14:12+00:00", "service": "payments-api", "level": "INFO", "message": "[payments-api] INFO Transaction batch processed batchId=1071 records=61"}
+{"timestamp": "2026-06-13T08:14:24+00:00", "service": "kyc-worker", "level": "INFO", "message": "[kyc-worker] INFO Transaction batch processed batchId=1072 records=62"}
+{"timestamp": "2026-06-13T08:14:36+00:00", "service": "ledger-service", "level": "INFO", "message": "[ledger-service] INFO Transaction batch processed batchId=1073 records=63"}
+{"timestamp": "2026-06-13T08:14:48+00:00", "service": "notification-hub", "level": "INFO", "message": "[notification-hub] INFO Transaction batch processed batchId=1074 records=64"}
+{"timestamp": "2026-06-13T08:15:00+00:00", "service": "auth-service", "level": "WARN", "message": "[auth-service] WARN Connection retry attempt {n} to postgres-primary \u2014 timeout, will retry"}
+{"timestamp": "2026-06-13T08:15:12+00:00", "service": "payments-api", "level": "INFO", "message": "[payments-api] INFO Transaction batch processed batchId=1076 records=66"}
+{"timestamp": "2026-06-13T08:15:24+00:00", "service": "auth-service", "level": "CRITICAL", "message": "[auth-service] CRITICAL password=Sup3rS3cret! logged during auth debug"}
+{"timestamp": "2026-06-13T08:15:36+00:00", "service": "ledger-service", "level": "INFO", "message": "[ledger-service] INFO Transaction batch processed batchId=1078 records=68"}
+{"timestamp": "2026-06-13T08:15:48+00:00", "service": "notification-hub", "level": "INFO", "message": "[notification-hub] INFO Transaction batch processed batchId=1079 records=69"}
+{"timestamp": "2026-06-13T08:16:00+00:00", "service": "auth-service", "level": "WARN", "message": "[auth-service] WARN Connection retry attempt {n} to postgres-primary \u2014 timeout, will retry"}
+{"timestamp": "2026-06-13T08:16:12+00:00", "service": "payments-api", "level": "INFO", "message": "[payments-api] INFO Transaction batch processed batchId=1081 records=51"}
+{"timestamp": "2026-06-13T08:16:24+00:00", "service": "kyc-worker", "level": "INFO", "message": "[kyc-worker] INFO Transaction batch processed batchId=1082 records=52"}
+{"timestamp": "2026-06-13T08:16:36+00:00", "service": "ledger-service", "level": "INFO", "message": "[ledger-service] INFO Transaction batch processed batchId=1083 records=53"}
+{"timestamp": "2026-06-13T08:16:48+00:00", "service": "notification-hub", "level": "INFO", "message": "[notification-hub] INFO Transaction batch processed batchId=1084 records=54"}
+{"timestamp": "2026-06-13T08:17:00+00:00", "service": "auth-service", "level": "WARN", "message": "[auth-service] WARN Connection retry attempt {n} to postgres-primary \u2014 timeout, will retry"}
+{"timestamp": "2026-06-13T08:17:12+00:00", "service": "payments-api", "level": "INFO", "message": "[payments-api] INFO Transaction batch processed batchId=1086 records=56"}
+{"timestamp": "2026-06-13T08:17:24+00:00", "service": "kyc-worker", "level": "INFO", "message": "[kyc-worker] INFO Transaction batch processed batchId=1087 records=57"}
+{"timestamp": "2026-06-13T08:17:36+00:00", "service": "ledger-service", "level": "INFO", "message": "[ledger-service] INFO Transaction batch processed batchId=1088 records=58"}
+{"timestamp": "2026-06-13T08:17:48+00:00", "service": "notification-hub", "level": "INFO", "message": "[notification-hub] INFO Transaction batch processed batchId=1089 records=59"}
+{"timestamp": "2026-06-13T08:18:00+00:00", "service": "auth-service", "level": "WARN", "message": "[auth-service] WARN Connection retry attempt {n} to postgres-primary \u2014 timeout, will retry"}
+{"timestamp": "2026-06-13T08:18:12+00:00", "service": "payments-api", "level": "INFO", "message": "[payments-api] INFO Transaction batch processed batchId=1091 records=61"}
+{"timestamp": "2026-06-13T08:18:24+00:00", "service": "kyc-worker", "level": "INFO", "message": "[kyc-worker] INFO Transaction batch processed batchId=1092 records=62"}
+{"timestamp": "2026-06-13T08:18:36+00:00", "service": "ledger-service", "level": "INFO", "message": "[ledger-service] INFO Transaction batch processed batchId=1093 records=63"}
+{"timestamp": "2026-06-13T08:18:48+00:00", "service": "notification-hub", "level": "INFO", "message": "[notification-hub] INFO Transaction batch processed batchId=1094 records=64"}
+{"timestamp": "2026-06-13T08:19:00+00:00", "service": "auth-service", "level": "WARN", "message": "[auth-service] WARN Connection retry attempt {n} to postgres-primary \u2014 timeout, will retry"}
+{"timestamp": "2026-06-13T08:19:12+00:00", "service": "payments-api", "level": "INFO", "message": "[payments-api] INFO Transaction batch processed batchId=1096 records=66"}
+{"timestamp": "2026-06-13T08:19:24+00:00", "service": "kyc-worker", "level": "INFO", "message": "[kyc-worker] INFO Transaction batch processed batchId=1097 records=67"}
+{"timestamp": "2026-06-13T08:19:36+00:00", "service": "ledger-service", "level": "INFO", "message": "[ledger-service] INFO Transaction batch processed batchId=1098 records=68"}
+{"timestamp": "2026-06-13T08:19:48+00:00", "service": "notification-hub", "level": "INFO", "message": "[notification-hub] INFO Transaction batch processed batchId=1099 records=69"}
+{"timestamp": "2026-06-13T08:20:00+00:00", "service": "auth-service", "level": "WARN", "message": "[auth-service] WARN Connection retry attempt {n} to postgres-primary \u2014 timeout, will retry"}
+{"timestamp": "2026-06-13T08:20:12+00:00", "service": "payments-api", "level": "INFO", "message": "[payments-api] INFO Transaction batch processed batchId=1101 records=51"}
+{"timestamp": "2026-06-13T08:20:24+00:00", "service": "kyc-worker", "level": "INFO", "message": "[kyc-worker] INFO Transaction batch processed batchId=1102 records=52"}
+{"timestamp": "2026-06-13T08:20:36+00:00", "service": "ledger-service", "level": "INFO", "message": "[ledger-service] INFO Transaction batch processed batchId=1103 records=53"}
+{"timestamp": "2026-06-13T08:20:48+00:00", "service": "notification-hub", "level": "INFO", "message": "[notification-hub] INFO Transaction batch processed batchId=1104 records=54"}
+{"timestamp": "2026-06-13T08:21:00+00:00", "service": "auth-service", "level": "WARN", "message": "[auth-service] WARN Connection retry attempt {n} to postgres-primary \u2014 timeout, will retry"}
+{"timestamp": "2026-06-13T08:21:12+00:00", "service": "payments-api", "level": "INFO", "message": "[payments-api] INFO Transaction batch processed batchId=1106 records=56"}
+{"timestamp": "2026-06-13T08:21:24+00:00", "service": "auth-service", "level": "CRITICAL", "message": "[auth-service] CRITICAL password=Sup3rS3cret! logged during auth debug"}
+{"timestamp": "2026-06-13T08:21:36+00:00", "service": "ledger-service", "level": "INFO", "message": "[ledger-service] INFO Transaction batch processed batchId=1108 records=58"}
+{"timestamp": "2026-06-13T08:21:48+00:00", "service": "notification-hub", "level": "INFO", "message": "[notification-hub] INFO Transaction batch processed batchId=1109 records=59"}
+{"timestamp": "2026-06-13T08:22:00+00:00", "service": "auth-service", "level": "WARN", "message": "[auth-service] WARN Connection retry attempt {n} to postgres-primary \u2014 timeout, will retry"}
+{"timestamp": "2026-06-13T08:22:12+00:00", "service": "payments-api", "level": "INFO", "message": "[payments-api] INFO Transaction batch processed batchId=1111 records=61"}
+{"timestamp": "2026-06-13T08:22:24+00:00", "service": "kyc-worker", "level": "INFO", "message": "[kyc-worker] INFO Transaction batch processed batchId=1112 records=62"}
+{"timestamp": "2026-06-13T08:22:36+00:00", "service": "ledger-service", "level": "INFO", "message": "[ledger-service] INFO Transaction batch processed batchId=1113 records=63"}
+{"timestamp": "2026-06-13T08:22:48+00:00", "service": "notification-hub", "level": "INFO", "message": "[notification-hub] INFO Transaction batch processed batchId=1114 records=64"}
+{"timestamp": "2026-06-13T08:23:00+00:00", "service": "auth-service", "level": "WARN", "message": "[auth-service] WARN Connection retry attempt {n} to postgres-primary \u2014 timeout, will retry"}
+{"timestamp": "2026-06-13T08:23:12+00:00", "service": "payments-api", "level": "INFO", "message": "[payments-api] INFO Transaction batch processed batchId=1116 records=66"}
+{"timestamp": "2026-06-13T08:23:24+00:00", "service": "kyc-worker", "level": "INFO", "message": "[kyc-worker] INFO Transaction batch processed batchId=1117 records=67"}
+{"timestamp": "2026-06-13T08:23:36+00:00", "service": "ledger-service", "level": "INFO", "message": "[ledger-service] INFO Transaction batch processed batchId=1118 records=68"}
+{"timestamp": "2026-06-13T08:23:48+00:00", "service": "notification-hub", "level": "INFO", "message": "[notification-hub] INFO Transaction batch processed batchId=1119 records=69"}
+{"timestamp": "2026-06-13T08:24:00+00:00", "service": "auth-service", "level": "WARN", "message": "[auth-service] WARN Connection retry attempt {n} to postgres-primary \u2014 timeout, will retry"}
+{"timestamp": "2026-06-13T08:24:12+00:00", "service": "payments-api", "level": "INFO", "message": "[payments-api] INFO Transaction batch processed batchId=1121 records=51"}
+{"timestamp": "2026-06-13T08:24:24+00:00", "service": "kyc-worker", "level": "INFO", "message": "[kyc-worker] INFO Transaction batch processed batchId=1122 records=52"}
+{"timestamp": "2026-06-13T08:24:36+00:00", "service": "ledger-service", "level": "INFO", "message": "[ledger-service] INFO Transaction batch processed batchId=1123 records=53"}
+{"timestamp": "2026-06-13T08:24:48+00:00", "service": "notification-hub", "level": "INFO", "message": "[notification-hub] INFO Transaction batch processed batchId=1124 records=54"}
+{"timestamp": "2026-06-13T08:25:00+00:00", "service": "auth-service", "level": "WARN", "message": "[auth-service] WARN Connection retry attempt {n} to postgres-primary \u2014 timeout, will retry"}
+{"timestamp": "2026-06-13T08:25:12+00:00", "service": "payments-api", "level": "INFO", "message": "[payments-api] INFO Transaction batch processed batchId=1126 records=56"}
+{"timestamp": "2026-06-13T08:25:24+00:00", "service": "kyc-worker", "level": "INFO", "message": "[kyc-worker] INFO Transaction batch processed batchId=1127 records=57"}
+{"timestamp": "2026-06-13T08:25:36+00:00", "service": "ledger-service", "level": "INFO", "message": "[ledger-service] INFO Transaction batch processed batchId=1128 records=58"}
+{"timestamp": "2026-06-13T08:25:48+00:00", "service": "notification-hub", "level": "INFO", "message": "[notification-hub] INFO Transaction batch processed batchId=1129 records=59"}
+{"timestamp": "2026-06-13T08:26:00+00:00", "service": "auth-service", "level": "WARN", "message": "[auth-service] WARN Connection retry attempt {n} to postgres-primary \u2014 timeout, will retry"}
+{"timestamp": "2026-06-13T08:26:12+00:00", "service": "payments-api", "level": "INFO", "message": "[payments-api] INFO Transaction batch processed batchId=1131 records=61"}
+{"timestamp": "2026-06-13T08:26:24+00:00", "service": "kyc-worker", "level": "INFO", "message": "[kyc-worker] INFO Transaction batch processed batchId=1132 records=62"}
+{"timestamp": "2026-06-13T08:26:36+00:00", "service": "ledger-service", "level": "INFO", "message": "[ledger-service] INFO Transaction batch processed batchId=1133 records=63"}
+{"timestamp": "2026-06-13T08:26:48+00:00", "service": "notification-hub", "level": "INFO", "message": "[notification-hub] INFO Transaction batch processed batchId=1134 records=64"}
+{"timestamp": "2026-06-13T08:27:00+00:00", "service": "auth-service", "level": "WARN", "message": "[auth-service] WARN Connection retry attempt {n} to postgres-primary \u2014 timeout, will retry"}
+{"timestamp": "2026-06-13T08:27:12+00:00", "service": "payments-api", "level": "INFO", "message": "[payments-api] INFO Transaction batch processed batchId=1136 records=66"}
+{"timestamp": "2026-06-13T08:27:24+00:00", "service": "auth-service", "level": "CRITICAL", "message": "[auth-service] CRITICAL password=Sup3rS3cret! logged during auth debug"}
+{"timestamp": "2026-06-13T08:27:36+00:00", "service": "ledger-service", "level": "INFO", "message": "[ledger-service] INFO Transaction batch processed batchId=1138 records=68"}
+{"timestamp": "2026-06-13T08:27:48+00:00", "service": "notification-hub", "level": "INFO", "message": "[notification-hub] INFO Transaction batch processed batchId=1139 records=69"}
+{"timestamp": "2026-06-13T08:28:00+00:00", "service": "auth-service", "level": "WARN", "message": "[auth-service] WARN Connection retry attempt {n} to postgres-primary \u2014 timeout, will retry"}
+{"timestamp": "2026-06-13T08:28:12+00:00", "service": "payments-api", "level": "INFO", "message": "[payments-api] INFO Transaction batch processed batchId=1141 records=51"}
+{"timestamp": "2026-06-13T08:28:24+00:00", "service": "kyc-worker", "level": "INFO", "message": "[kyc-worker] INFO Transaction batch processed batchId=1142 records=52"}
+{"timestamp": "2026-06-13T08:28:36+00:00", "service": "ledger-service", "level": "INFO", "message": "[ledger-service] INFO Transaction batch processed batchId=1143 records=53"}
+{"timestamp": "2026-06-13T08:28:48+00:00", "service": "notification-hub", "level": "INFO", "message": "[notification-hub] INFO Transaction batch processed batchId=1144 records=54"}
+{"timestamp": "2026-06-13T08:29:00+00:00", "service": "auth-service", "level": "WARN", "message": "[auth-service] WARN Connection retry attempt {n} to postgres-primary \u2014 timeout, will retry"}
+{"timestamp": "2026-06-13T08:29:12+00:00", "service": "payments-api", "level": "INFO", "message": "[payments-api] INFO Transaction batch processed batchId=1146 records=56"}
+{"timestamp": "2026-06-13T08:29:24+00:00", "service": "kyc-worker", "level": "INFO", "message": "[kyc-worker] INFO Transaction batch processed batchId=1147 records=57"}
+{"timestamp": "2026-06-13T08:29:36+00:00", "service": "ledger-service", "level": "INFO", "message": "[ledger-service] INFO Transaction batch processed batchId=1148 records=58"}
+{"timestamp": "2026-06-13T08:29:48+00:00", "service": "notification-hub", "level": "INFO", "message": "[notification-hub] INFO Transaction batch processed batchId=1149 records=59"}
+{"timestamp": "2026-06-13T08:30:00+00:00", "service": "auth-service", "level": "WARN", "message": "[auth-service] WARN Connection retry attempt {n} to postgres-primary \u2014 timeout, will retry"}
+{"timestamp": "2026-06-13T08:30:12+00:00", "service": "payments-api", "level": "INFO", "message": "[payments-api] INFO Transaction batch processed batchId=1151 records=61"}
+{"timestamp": "2026-06-13T08:30:24+00:00", "service": "kyc-worker", "level": "INFO", "message": "[kyc-worker] INFO Transaction batch processed batchId=1152 records=62"}
+{"timestamp": "2026-06-13T08:30:36+00:00", "service": "ledger-service", "level": "INFO", "message": "[ledger-service] INFO Transaction batch processed batchId=1153 records=63"}
+{"timestamp": "2026-06-13T08:30:48+00:00", "service": "notification-hub", "level": "INFO", "message": "[notification-hub] INFO Transaction batch processed batchId=1154 records=64"}
+{"timestamp": "2026-06-13T08:31:00+00:00", "service": "auth-service", "level": "WARN", "message": "[auth-service] WARN Connection retry attempt {n} to postgres-primary \u2014 timeout, will retry"}
+{"timestamp": "2026-06-13T08:31:12+00:00", "service": "payments-api", "level": "INFO", "message": "[payments-api] INFO Transaction batch processed batchId=1156 records=66"}
+{"timestamp": "2026-06-13T08:31:24+00:00", "service": "kyc-worker", "level": "INFO", "message": "[kyc-worker] INFO Transaction batch processed batchId=1157 records=67"}
+{"timestamp": "2026-06-13T08:31:36+00:00", "service": "ledger-service", "level": "INFO", "message": "[ledger-service] INFO Transaction batch processed batchId=1158 records=68"}
+{"timestamp": "2026-06-13T08:31:48+00:00", "service": "notification-hub", "level": "INFO", "message": "[notification-hub] INFO Transaction batch processed batchId=1159 records=69"}
+{"timestamp": "2026-06-13T08:32:00+00:00", "service": "auth-service", "level": "WARN", "message": "[auth-service] WARN Connection retry attempt {n} to postgres-primary \u2014 timeout, will retry"}
+{"timestamp": "2026-06-13T08:32:12+00:00", "service": "payments-api", "level": "INFO", "message": "[payments-api] INFO Transaction batch processed batchId=1161 records=51"}
+{"timestamp": "2026-06-13T08:32:24+00:00", "service": "kyc-worker", "level": "INFO", "message": "[kyc-worker] INFO Transaction batch processed batchId=1162 records=52"}
+{"timestamp": "2026-06-13T08:32:36+00:00", "service": "ledger-service", "level": "INFO", "message": "[ledger-service] INFO Transaction batch processed batchId=1163 records=53"}
+{"timestamp": "2026-06-13T08:32:48+00:00", "service": "notification-hub", "level": "INFO", "message": "[notification-hub] INFO Transaction batch processed batchId=1164 records=54"}
+{"timestamp": "2026-06-13T08:33:00+00:00", "service": "auth-service", "level": "WARN", "message": "[auth-service] WARN Connection retry attempt {n} to postgres-primary \u2014 timeout, will retry"}
+{"timestamp": "2026-06-13T08:33:12+00:00", "service": "payments-api", "level": "INFO", "message": "[payments-api] INFO Transaction batch processed batchId=1166 records=56"}
+{"timestamp": "2026-06-13T08:33:24+00:00", "service": "auth-service", "level": "CRITICAL", "message": "[auth-service] CRITICAL password=Sup3rS3cret! logged during auth debug"}
+{"timestamp": "2026-06-13T08:33:36+00:00", "service": "ledger-service", "level": "INFO", "message": "[ledger-service] INFO Transaction batch processed batchId=1168 records=58"}
+{"timestamp": "2026-06-13T08:33:48+00:00", "service": "notification-hub", "level": "INFO", "message": "[notification-hub] INFO Transaction batch processed batchId=1169 records=59"}
+{"timestamp": "2026-06-13T08:34:00+00:00", "service": "auth-service", "level": "WARN", "message": "[auth-service] WARN Connection retry attempt {n} to postgres-primary \u2014 timeout, will retry"}
+{"timestamp": "2026-06-13T08:34:12+00:00", "service": "payments-api", "level": "INFO", "message": "[payments-api] INFO Transaction batch processed batchId=1171 records=61"}
+{"timestamp": "2026-06-13T08:34:24+00:00", "service": "kyc-worker", "level": "INFO", "message": "[kyc-worker] INFO Transaction batch processed batchId=1172 records=62"}
+{"timestamp": "2026-06-13T08:34:36+00:00", "service": "ledger-service", "level": "INFO", "message": "[ledger-service] INFO Transaction batch processed batchId=1173 records=63"}
+{"timestamp": "2026-06-13T08:34:48+00:00", "service": "notification-hub", "level": "INFO", "message": "[notification-hub] INFO Transaction batch processed batchId=1174 records=64"}
+{"timestamp": "2026-06-13T08:35:00+00:00", "service": "auth-service", "level": "WARN", "message": "[auth-service] WARN Connection retry attempt {n} to postgres-primary \u2014 timeout, will retry"}
+{"timestamp": "2026-06-13T08:35:12+00:00", "service": "payments-api", "level": "INFO", "message": "[payments-api] INFO Transaction batch processed batchId=1176 records=66"}
+{"timestamp": "2026-06-13T08:35:24+00:00", "service": "kyc-worker", "level": "INFO", "message": "[kyc-worker] INFO Transaction batch processed batchId=1177 records=67"}
+{"timestamp": "2026-06-13T08:35:36+00:00", "service": "ledger-service", "level": "INFO", "message": "[ledger-service] INFO Transaction batch processed batchId=1178 records=68"}
+{"timestamp": "2026-06-13T08:35:48+00:00", "service": "notification-hub", "level": "INFO", "message": "[notification-hub] INFO Transaction batch processed batchId=1179 records=69"}
+{"timestamp": "2026-06-13T08:36:00+00:00", "service": "auth-service", "level": "WARN", "message": "[auth-service] WARN Connection retry attempt {n} to postgres-primary \u2014 timeout, will retry"}
+{"timestamp": "2026-06-13T08:36:12+00:00", "service": "payments-api", "level": "INFO", "message": "[payments-api] INFO Transaction batch processed batchId=1181 records=51"}
+{"timestamp": "2026-06-13T08:36:24+00:00", "service": "kyc-worker", "level": "INFO", "message": "[kyc-worker] INFO Transaction batch processed batchId=1182 records=52"}
+{"timestamp": "2026-06-13T08:36:36+00:00", "service": "ledger-service", "level": "INFO", "message": "[ledger-service] INFO Transaction batch processed batchId=1183 records=53"}
+{"timestamp": "2026-06-13T08:36:48+00:00", "service": "notification-hub", "level": "INFO", "message": "[notification-hub] INFO Transaction batch processed batchId=1184 records=54"}
+{"timestamp": "2026-06-13T08:37:00+00:00", "service": "auth-service", "level": "WARN", "message": "[auth-service] WARN Connection retry attempt {n} to postgres-primary \u2014 timeout, will retry"}
+{"timestamp": "2026-06-13T08:37:12+00:00", "service": "payments-api", "level": "INFO", "message": "[payments-api] INFO Transaction batch processed batchId=1186 records=56"}
+{"timestamp": "2026-06-13T08:37:24+00:00", "service": "kyc-worker", "level": "INFO", "message": "[kyc-worker] INFO Transaction batch processed batchId=1187 records=57"}
+{"timestamp": "2026-06-13T08:37:36+00:00", "service": "ledger-service", "level": "INFO", "message": "[ledger-service] INFO Transaction batch processed batchId=1188 records=58"}
+{"timestamp": "2026-06-13T08:37:48+00:00", "service": "notification-hub", "level": "INFO", "message": "[notification-hub] INFO Transaction batch processed batchId=1189 records=59"}
+{"timestamp": "2026-06-13T08:38:00+00:00", "service": "auth-service", "level": "WARN", "message": "[auth-service] WARN Connection retry attempt {n} to postgres-primary \u2014 timeout, will retry"}
+{"timestamp": "2026-06-13T08:38:12+00:00", "service": "payments-api", "level": "INFO", "message": "[payments-api] INFO Transaction batch processed batchId=1191 records=61"}
+{"timestamp": "2026-06-13T08:38:24+00:00", "service": "kyc-worker", "level": "INFO", "message": "[kyc-worker] INFO Transaction batch processed batchId=1192 records=62"}
+{"timestamp": "2026-06-13T08:38:36+00:00", "service": "ledger-service", "level": "INFO", "message": "[ledger-service] INFO Transaction batch processed batchId=1193 records=63"}
+{"timestamp": "2026-06-13T08:38:48+00:00", "service": "notification-hub", "level": "INFO", "message": "[notification-hub] INFO Transaction batch processed batchId=1194 records=64"}
+{"timestamp": "2026-06-13T08:39:00+00:00", "service": "auth-service", "level": "WARN", "message": "[auth-service] WARN Connection retry attempt {n} to postgres-primary \u2014 timeout, will retry"}
+{"timestamp": "2026-06-13T08:39:12+00:00", "service": "payments-api", "level": "INFO", "message": "[payments-api] INFO Transaction batch processed batchId=1196 records=66"}
+{"timestamp": "2026-06-13T08:39:24+00:00", "service": "auth-service", "level": "CRITICAL", "message": "[auth-service] CRITICAL password=Sup3rS3cret! logged during auth debug"}
+{"timestamp": "2026-06-13T08:39:36+00:00", "service": "ledger-service", "level": "INFO", "message": "[ledger-service] INFO Transaction batch processed batchId=1198 records=68"}
+{"timestamp": "2026-06-13T08:39:48+00:00", "service": "notification-hub", "level": "INFO", "message": "[notification-hub] INFO Transaction batch processed batchId=1199 records=69"}

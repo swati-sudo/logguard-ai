@@ -1,0 +1,35 @@
+{
+  "warn connection retry attempt": {
+    "id": "pr-payments-002",
+    "title": "fix(logging): downgrade CHATTY_RETRY noise in payments-api",
+    "branch": "logguard/fix-noise-payments-api",
+    "file": "src/main/java/com/db/payments/ConnectionPool.java",
+    "line": 88,
+    "reviewer": "@platform-eng",
+    "fix_type": "log_level_downgrade",
+    "before": "logger.warn(\"[payments-api] Connection retry attempt {}\", attempt);",
+    "after": "logger.debug(\"[payments-api] Connection retry attempt {}\", attempt);"
+  },
+  "warn deprecated api": {
+    "id": "pr-ledger-003",
+    "title": "fix(logging): silence DEPRECATED_WARN in ledger-service",
+    "branch": "logguard/fix-deprecated-ledger",
+    "file": "src/main/java/com/db/ledger/TransferController.java",
+    "line": 112,
+    "reviewer": "@api-team",
+    "fix_type": "deprecated_removal",
+    "before": "logger.warn(\"[ledger-service] Deprecated API /v1/transfer called — migrate to /v2/transfer\");",
+    "after": "logger.debug(\"[ledger-service] Deprecated API /v1/transfer called\"); // scheduled for removal"
+  },
+  "warn redis cache miss": {
+    "id": "pr-auth-004",
+    "title": "fix(logging): reduce DEBUG_IN_PROD cache miss logs in auth-service",
+    "branch": "logguard/fix-cache-logging-auth",
+    "file": "src/main/java/com/db/auth/SessionCache.java",
+    "line": 56,
+    "reviewer": "@platform-eng",
+    "fix_type": "log_level_downgrade",
+    "before": "logger.warn(\"[auth-service] Redis cache miss for session key — fallback to DB\");",
+    "after": "logger.debug(\"[auth-service] Redis cache miss for session key — fallback to DB\");"
+  }
+}
