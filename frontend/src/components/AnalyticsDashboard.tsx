@@ -94,7 +94,7 @@ export default function AnalyticsDashboard() {
                 className={`font-bold ${
                   trends.alert_trend === "decreasing" ? "text-emerald-400" : "text-amber-400"
                 }`}
-              >
+              > 
                 {trends.alert_trend?.toUpperCase() || "N/A"}
               </span>
             </div>

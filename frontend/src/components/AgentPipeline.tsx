@@ -52,7 +52,7 @@ export default function AgentPipeline({ status, logCount }: Props) {
                 <span className="text-sm font-medium">{agent.name}</span>
               </div>
               <p className="mb-2 text-xs text-slate-500">{agent.desc}</p>
-              <span
+              <span 
                 className={`inline-block rounded-full border px-2 py-0.5 text-xs font-medium uppercase ${statusStyles[status[agent.key]] || statusStyles.idle}`}
               >
                 {status[agent.key]}

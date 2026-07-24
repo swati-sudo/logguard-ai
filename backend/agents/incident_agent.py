@@ -40,6 +40,20 @@ class IncidentAgent(BaseAgent):
         self.incidents: dict[str, Incident] = {}
         self.incident_queue: list[AlertCorrelation] = []
         self.event_bus = get_event_bus()
+        # Simulated service-specific alert routing configuration
+        # In a real system, this would be loaded from a DB or config service
+        self.service_alert_routing_configs = {
+            "auth-service": [
+                {"type": "slack", "channel": "#auth-alerts", "min_severity": IncidentSeverity.HIGH.value},
+                {"type": "pagerduty", "service_key": "auth_pd_critical", "min_severity": IncidentSeverity.CRITICAL.value, "fallback_webhook": "https://logguard.webhook.com/auth-fallback"}
+            ],
+            "payments-api": [
+                {"type": "slack", "channel": "#payments-alerts", "min_severity": IncidentSeverity.MEDIUM.value},
+                {"type": "email", "address": "payments-oncall@example.com", "min_severity": IncidentSeverity.HIGH.value}
+            ],
+            # Example for a service that uses a generic webhook for some alerts
+            "user-service": [{"type": "webhook", "url": "https://user-webhook.example.com/alerts", "min_severity": IncidentSeverity.MEDIUM.value}]
+        }
         self.detection_rules = self._load_detection_rules()
         
     def _load_detection_rules(self) -> list[IncidentDetectionRule]:
@@ -289,10 +303,59 @@ class IncidentAgent(BaseAgent):
         incident_id = f"incident-{datetime.utcnow().strftime('%Y%m%d')}-{str(uuid.uuid4())[:8]}"
         now = datetime.utcnow()
         
-        # Determine escalation
-        escalation_channel = None
-        if severity in [IncidentSeverity.CRITICAL, IncidentSeverity.HIGH]:
-            escalation_channel = EscalationChannel.PAGERDUTY if severity == IncidentSeverity.CRITICAL else EscalationChannel.SLACK
+        # --- Per-Service Configurable Alert Routing Logic ---
+        chosen_escalation_channel: Optional[EscalationChannel] = None
+        chosen_escalated_to_list: list[str] = []
+        
+        # Map for severity comparison
+        severity_rank = {
+            IncidentSeverity.LOW: 0,
+            IncidentSeverity.MEDIUM: 1,
+            IncidentSeverity.HIGH: 2,
+            IncidentSeverity.CRITICAL: 3
+        }
+        incident_severity_rank = severity_rank.get(severity, 0)
+
+        for service_id in affected_services:
+            service_config = self.service_alert_routing_configs.get(service_id)
+            if service_config:
+                for dest in service_config:
+                    min_severity_for_dest_rank = severity_rank.get(IncidentSeverity(dest["min_severity"]), 0)
+                    
+                    if incident_severity_rank >= min_severity_for_dest_rank:
+                        # Matched this destination rule
+                        if dest["type"] == "slack":
+                            chosen_escalated_to_list.append(f"SLACK:{dest['channel']}")
+                            # Prioritize PAGERDUTY > SLACK > EMAIL for the primary channel type
+                            if chosen_escalation_channel in [None, EscalationChannel.EMAIL]:
+                                chosen_escalation_channel = EscalationChannel.SLACK
+                        elif dest["type"] == "pagerduty":
+                            chosen_escalated_to_list.append(f"PAGERDUTY:{dest['service_key']}")
+                            chosen_escalation_channel = EscalationChannel.PAGERDUTY # Always highest priority if present
+                            
+                            # Add fallback webhook for critical PagerDuty alerts
+                            if severity == IncidentSeverity.CRITICAL and dest.get("fallback_webhook"):
+                                chosen_escalated_to_list.append(f"WEBHOOK_FALLBACK:{dest['fallback_webhook']}")
+                        elif dest["type"] == "email":
+                            chosen_escalated_to_list.append(f"EMAIL:{dest['address']}")
+                            if chosen_escalation_channel is None:
+                                chosen_escalation_channel = EscalationChannel.EMAIL
+                        elif dest["type"] == "webhook":
+                            chosen_escalated_to_list.append(f"WEBHOOK:{dest['url']}")
+                            # Map generic webhook to Slack enum as a fallback for the primary channel type
+                            if chosen_escalation_channel in [None, EscalationChannel.EMAIL]:
+                                chosen_escalation_channel = EscalationChannel.SLACK
+
+        # If no custom routing applied or matched, use the existing global default logic
+        if not chosen_escalated_to_list:
+            if severity == IncidentSeverity.CRITICAL:
+                chosen_escalation_channel = EscalationChannel.PAGERDUTY
+                chosen_escalated_to_list.append("@pagerduty-oncall")
+            elif severity == IncidentSeverity.HIGH or severity == IncidentSeverity.MEDIUM:
+                chosen_escalation_channel = EscalationChannel.SLACK
+                chosen_escalated_to_list.append("@incident-channel")
+        
+        # --- End Per-Service Routing Logic ---
         
         incident = Incident(
             id=incident_id,
@@ -307,7 +370,7 @@ class IncidentAgent(BaseAgent):
             alert_count=len(alert_ids),
             pii_involved=pii_involved,
             pii_category=pii_category,
-            escalation_channel=escalation_channel,
+            escalation_channel=chosen_escalation_channel,
             events=[
                 {
                     "timestamp": now.isoformat(),
@@ -315,6 +378,7 @@ class IncidentAgent(BaseAgent):
                     "description": "Incident created by Incident Agent"
                 }
             ]
+            ,escalated_to=list(set(chosen_escalated_to_list)) # Set specific destinations
         )
         
         return incident
@@ -346,18 +410,8 @@ class IncidentAgent(BaseAgent):
         if not incident.escalation_channel:
             return
         
-        incident.escalated_at = datetime.utcnow()
-        
-        # In production, integrate with actual services
-        channel_names = {
-            EscalationChannel.PAGERDUTY: "@pagerduty-oncall",
-            EscalationChannel.SLACK: "@incident-channel",
-            EscalationChannel.EMAIL: "incident-alert@company.com",
-            EscalationChannel.SMS: "emergency-team"
-        }
-        
-        incident.escalated_to = [channel_names.get(incident.escalation_channel, "unknown")]
-        
+        incident.escalated_at = datetime.utcnow() # Update timestamp
+
         # Publish escalation event
         self.event_bus.publish(Event(
             event_type=EventType.INCIDENT_ESCALATED,

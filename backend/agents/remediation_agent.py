@@ -208,15 +208,22 @@ Guidelines:
             
             repo = self.github.get_repo(repo_name)
             main_branch = repo.get_branch("main")
+            branch_name = pr.branch
             
             # Create feature branch
             try:
                 repo.create_git_ref(
-                    ref=f"refs/heads/{pr.branch}",
+                    ref=f"refs/heads/{branch_name}",
                     sha=main_branch.commit.sha
                 )
-            except Exception:
-                # Branch already exists, that's ok
+            except Exception as e:
+                # Branch already exists, try to reuse or update it.
+                # Or if it's an actual error, log and return.
+                if "Reference already exists" not in str(e):
+                    print(f"Error creating branch {branch_name}: {e}")
+                    return pr
+                # If branch exists, subsequent update_file will handle it.
+                # We don't need to do anything specific here for existing branch.
                 pass
             
             # Get current file content
@@ -233,7 +240,7 @@ Guidelines:
                     path=pr.file_path,
                     message=pr.title,
                     content=pr.after,
-                    branch=pr.branch,
+                    branch=branch_name,
                     sha=sha
                 )
             else:
@@ -241,14 +248,28 @@ Guidelines:
                     path=pr.file_path,
                     message=pr.title,
                     content=pr.after,
-                    branch=pr.branch
+                    branch=branch_name
                 )
             
+            # Templated PR body
+            template_context = {
+                "service": pr.service,
+                "severity": pr.fix_type.upper() if pr.fix_type else "UNKNOWN",
+                "redacted_snippet": pr.before, # Using 'before' for context of what was remediated
+                "trace_id": "N/A", # Trace ID not directly available in PR object
+                "suggested_patch_url": pr.github_url if pr.github_url else "N/A",
+                "diff": pr.diff,
+                "fix_type": pr.fix_type.upper(),
+                "file_path": pr.file_path,
+                "line_number": pr.line_number
+            }
+            pr_body_template = "**LogGuard AI Auto-Generated Fix**\n\nDetected issue type: {fix_type}\nService: {service}\nFile: {file_path}:{line_number}\n\n```diff\n{diff}\n```\n\nFor more details: {suggested_patch_url}"
+            pr_body = pr_body_template.format(**template_context)
             # Create pull request
             github_pr = repo.create_pull(
                 title=pr.title,
-                body=f"**LogGuard AI Auto-Generated Fix**\n\n{pr.fix_type.upper()}\n\n```diff\n{pr.diff}\n```",
-                head=pr.branch,
+                body=pr_body,
+                head=branch_name,
                 base="main"
             )
             

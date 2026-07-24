@@ -76,6 +76,7 @@ export default function ROIDashboard({ metrics }: Props) {
       <p className="mt-2 text-center text-xs text-slate-500">
         AI suppressed {metrics.noise_percent}% of redundant log noise, saving €
         {metrics.monthly_savings_eur.toLocaleString()}/month in Splunk/Datadog ingestion
+        <br /> Time to remediate PII: &lt;{metrics.pii_containment_ms}ms
       </p>
     </div>
   );
