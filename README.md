@@ -1,6 +1,6 @@
 # LogGuard AI
 
-**Agentic Observability & Privacy Engine** — a hackathon demo for Deutsche Bank showing real-time PII containment, log noise reduction, and automated code remediation.
+**Agentic Observability & Privacy Engine** — a hackathon demo for XYZ Bank showing real-time PII containment, log noise reduction, and automated code remediation.
 
 ## Architecture
 

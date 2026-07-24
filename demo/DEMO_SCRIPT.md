@@ -12,7 +12,7 @@
 
 ### 1. Introduction (30 sec)
 
-> "Deutsche Bank generates terabytes of logs daily. Two problems: **log pollution** — millions of useless warnings masking real crashes — and **data leakage** — IBANs, passwords, and tokens printed into unencrypted logs.
+> "XYZ Bank generates terabytes of logs daily. Two problems: **log pollution** — millions of useless warnings masking real crashes — and **data leakage** — IBANs, passwords, and tokens printed into unencrypted logs.
 >
 > LogGuard AI is a 3-agent system that acts as an automated, real-time code reviewer and log cleaner."
 

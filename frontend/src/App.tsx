@@ -55,7 +55,7 @@ export default function App() {
                 Agentic Observability &amp; Privacy Engine
               </span>
             </h1>
-            <p className="text-xs text-slate-500">Deutsche Bank Hackathon Demo</p>
+            <p className="text-xs text-slate-500">XYZ Bank Hackathon Demo</p>
           </div>
           <div className="flex gap-2">
             {!streaming ? (

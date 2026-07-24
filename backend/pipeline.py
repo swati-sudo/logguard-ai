@@ -3,20 +3,24 @@ import random
 from dataclasses import asdict
 from pathlib import Path
 from datetime import datetime
-from typing import Any
+from typing import Any, Optional
 
 from agents.noise_agent import NoiseAgent
 from agents.privacy_agent import PrivacyAgent
 from agents.remediation_agent import RemediationAgent
+from agents.incident_agent import IncidentAgent
+from agents.event_bus import get_event_bus
 
 
 class LogPipeline:
-    """Orchestrates Privacy → Noise → Remediation agents."""
+    """Orchestrates Privacy → Noise → Incident → Remediation agents."""
 
     def __init__(self) -> None:
         self.privacy = PrivacyAgent()
         self.noise = NoiseAgent()
+        self.incident = IncidentAgent()
         self.remediation = RemediationAgent()
+        self.event_bus = get_event_bus()
         self.processed_logs: list[str] = []
         self.alerts: list[dict[str, Any]] = []
         self.pr_cache: dict[str, dict] = {}
@@ -201,4 +205,51 @@ class LogPipeline:
         # Use remediation agent's LLM analysis
         analysis = self.remediation.analyze_root_cause(self.processed_logs[-50:])
         return analysis
+    
+    def detect_incidents(self) -> dict[str, Any]:
+        """Detect incidents from current alerts and metrics."""
+        # Calculate metrics
+        roi_metrics = self.get_roi_metrics()
+        
+        # Prepare alert data for incident detection
+        pii_alerts = [a for a in self.alerts if "PII" in a.get("message", "").upper()]
+        
+        incident_data = {
+            "alerts": self.alerts[-10:] if self.alerts else [],  # Recent alerts
+            "metrics": {
+                "error_rate": roi_metrics.get("noise_percent", 0) / 100,
+                "error_count": len(self.alerts),
+                "affected_services": list(set(a.get("service", "unknown") for a in self.alerts)),
+                "pii_involved": len(pii_alerts) > 0,
+                "pii_category": pii_alerts[0].get("categories", [None])[0] if pii_alerts else None,
+                "db_pool_utilization": random.randint(40, 95),
+            }
+        }
+        
+        # Process incidents
+        incident_result = self.incident.execute(incident_data)
+        return incident_result
+    
+    def get_open_incidents(self) -> list[dict]:
+        """Get all open incidents."""
+        return [asdict(i) for i in self.incident.get_open_incidents()]
+    
+    def get_incident(self, incident_id: str) -> Optional[dict]:
+        """Get incident by ID."""
+        incident = self.incident.get_incident(incident_id)
+        return asdict(incident) if incident else None
+    
+    def acknowledge_incident(self, incident_id: str) -> Optional[dict]:
+        """Acknowledge an incident."""
+        incident = self.incident.acknowledge_incident(incident_id)
+        return asdict(incident) if incident else None
+    
+    def resolve_incident(self, incident_id: str, notes: str = "") -> Optional[dict]:
+        """Resolve an incident."""
+        incident = self.incident.resolve_incident(incident_id, notes)
+        return asdict(incident) if incident else None
+    
+    def get_event_history(self, limit: int = 100) -> list[dict]:
+        """Get event bus history."""
+        return [e.to_dict() for e in self.event_bus.get_history(limit=limit)]
 

@@ -167,6 +167,62 @@ def get_full_metrics():
     }
 
 
+# ==================== Incident Management Endpoints ====================
+
+@app.post("/api/incidents/detect")
+def detect_incidents():
+    """Trigger incident detection from current alerts and metrics"""
+    return pipeline.detect_incidents()
+
+
+@app.get("/api/incidents")
+def get_incidents():
+    """Get all open incidents"""
+    return {"incidents": pipeline.get_open_incidents()}
+
+
+@app.get("/api/incidents/{incident_id}")
+def get_incident(incident_id: str):
+    """Get incident by ID"""
+    incident = pipeline.get_incident(incident_id)
+    if not incident:
+        return {"error": "Incident not found", "id": incident_id}
+    return incident
+
+
+class IncidentAcknowledgeRequest(BaseModel):
+    actor: str = "system"
+
+
+@app.post("/api/incidents/{incident_id}/acknowledge")
+def acknowledge_incident(incident_id: str, body: IncidentAcknowledgeRequest):
+    """Acknowledge an incident"""
+    incident = pipeline.acknowledge_incident(incident_id)
+    if not incident:
+        return {"error": "Incident not found", "id": incident_id}
+    return {"status": "acknowledged", "incident": incident}
+
+
+class IncidentResolveRequest(BaseModel):
+    resolution_notes: str = ""
+    actor: str = "system"
+
+
+@app.post("/api/incidents/{incident_id}/resolve")
+def resolve_incident(incident_id: str, body: IncidentResolveRequest):
+    """Resolve an incident"""
+    incident = pipeline.resolve_incident(incident_id, body.resolution_notes)
+    if not incident:
+        return {"error": "Incident not found", "id": incident_id}
+    return {"status": "resolved", "incident": incident}
+
+
+@app.get("/api/events")
+def get_events(limit: int = 100):
+    """Get event bus history"""
+    return {"events": pipeline.get_event_history(limit=limit)}
+
+
 if __name__ == "__main__":
     import uvicorn
 
