@@ -34,6 +34,8 @@ class PullRequest:
     fix_type: str
     github_url: Optional[str] = None
     created_at: Optional[str] = None
+    jira_issue_id: Optional[str] = None
+    jira_url: Optional[str] = None
 
 
 class RemediationAgent:
@@ -48,6 +50,10 @@ class RemediationAgent:
         
         self.enable_llm = os.getenv("ENABLE_LLM_DETECTION", "false").lower() == "true"
         self.enable_github = os.getenv("ENABLE_GITHUB_INTEGRATION", "false").lower() == "true"
+        self.enable_jira = os.getenv("ENABLE_JIRA_INTEGRATION", "false").lower() == "true"
+        self.jira_url = os.getenv("JIRA_URL")
+        self.jira_api_token = os.getenv("JIRA_API_TOKEN")
+        self.jira_project_key = os.getenv("JIRA_PROJECT_KEY")
         self.model_name = os.getenv("GEMINI_MODEL", "gemini-1.5-pro")
         self.client = None
         
@@ -67,6 +73,11 @@ class RemediationAgent:
             except Exception as e:
                 print(f"Failed to initialize Gemini client: {e}")
                 self.client = None
+        
+        if self.enable_jira:
+            if not self.jira_url or not self.jira_api_token or not self.jira_project_key:
+                print("Jira integration enabled but missing JIRA_URL, JIRA_API_TOKEN, or JIRA_PROJECT_KEY")
+                self.enable_jira = False
         
         if self.enable_github and GITHUB_AVAILABLE:
             try:
@@ -160,6 +171,10 @@ Guidelines:
         if self.enable_github and self.github:
             pr = self._create_github_pr(pr)
         
+        # Connect to Jira if enabled
+        if self.enable_jira:
+            pr = self._create_or_update_jira_issue(pr)
+        
         return pr
 
     def remediate_log(
@@ -193,6 +208,10 @@ Guidelines:
         # Try to create real GitHub PR if enabled
         if self.enable_github and self.github:
             pr = self._create_github_pr(pr)
+        
+        # Connect to Jira if enabled
+        if self.enable_jira:
+            pr = self._create_or_update_jira_issue(pr)
         
         return pr
 
@@ -257,6 +276,42 @@ Guidelines:
         except Exception as e:
             # GitHub PR creation failed, return mock PR
             return pr
+
+    def _create_or_update_jira_issue(self, pr: PullRequest) -> PullRequest:
+        """Placeholder for creating or updating a Jira issue."""
+        if not self.enable_jira:
+            return pr
+        
+        print(f"Jira integration enabled. Would create/update Jira issue for PR: {pr.id}")
+        # In a real implementation, this would use a Jira client library
+        # to interact with Jira's API.
+        # Example (commented out due to constraint against inventing new imports):
+        # from jira import JIRA 
+        # try:
+        #     jira_client = JIRA(server=self.jira_url, token_auth=self.jira_api_token)
+        #     if pr.jira_issue_id:
+        #         # Update existing issue
+        #         issue = jira_client.issue(pr.jira_issue_id)
+        #         issue.update(summary=pr.title, description=pr.body, etc.)
+        #     else:
+        #         # Create new issue
+        #         issue_dict = {
+        #             'project': {'key': self.jira_project_key},
+        #             'summary': pr.title,
+        #             'description': f"Automated fix for PII leakage: {pr.fix_type}\n\nGitHub PR: {pr.github_url or 'N/A'}",
+        #             'issuetype': {'name': 'Task'}, # Or 'Bug', 'Story'
+        #             'labels': ['LogGuard-AI', pr.fix_type]
+        #         }
+        #         new_issue = jira_client.create_issue(fields=issue_dict)
+        #         pr.jira_issue_id = new_issue.key
+        #         pr.jira_url = new_issue.permalink()
+        # except Exception as e:
+        #     print(f"Failed to interact with Jira: {e}")
+        
+        # Mocking Jira issue creation/update for now
+        pr.jira_issue_id = f"{self.jira_project_key or 'LG'}-AUTO-{str(uuid.uuid4())[:4].upper()}"
+        pr.jira_url = f"{self.jira_url}/browse/{pr.jira_issue_id}"
+        return pr
 
     def analyze_root_cause(self, logs: list[str]) -> dict:
         """Use LLM to find root cause from log sequence"""
