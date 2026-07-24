@@ -6,9 +6,18 @@ from datetime import datetime, timedelta
 from typing import Optional, List
 from dataclasses import asdict
 
+# New imports for templating and config handling
+import json
+import textwrap
+
 from agents.base_agent import BaseAgent, AgentConfig
 from agents.event_bus import Event, EventType, get_event_bus
 from models import (
+    # Assuming these dataclasses/enums are defined in models.py
+    # For this diff, we assume the Incident dataclass can dynamically
+    # accept 'redacted_snippet', 'trace_id', 'suggested_patch_url' attributes
+    # or that they are fields in the actual models.Incident.
+    # The 'escalated_to' list is also assumed to be an attribute for tracking.
     Incident, IncidentSeverity, IncidentStatus, EscalationChannel,
     AlertCorrelation, IncidentDetectionRule, IncidentTimeline
 )
@@ -40,6 +49,14 @@ class IncidentAgent(BaseAgent):
         self.incidents: dict[str, Incident] = {}
         self.incident_queue: list[AlertCorrelation] = []
         self.event_bus = get_event_bus()
+
+        # Define severity ranking for comparison
+        self.SEVERITY_RANK = {
+            IncidentSeverity.LOW.value: 1,
+            IncidentSeverity.MEDIUM.value: 2,
+            IncidentSeverity.HIGH.value: 3,
+            IncidentSeverity.CRITICAL.value: 4
+        }
         self.detection_rules = self._load_detection_rules()
         
     def _load_detection_rules(self) -> list[IncidentDetectionRule]:
@@ -91,6 +108,71 @@ class IncidentAgent(BaseAgent):
                 escalation_channel=EscalationChannel.SLACK
             ),
         ]
+    
+    # New: Mock configurable alert routing and remediation templates
+    # In a real system, these would be loaded from a database or config service
+    # based on the schema: service_alert_routing(service_id, destination_type, destination_meta, min_severity)
+    self.service_alert_routing_config: Dict[str, List[Dict[str, Any]]] = {
+        "auth-service": [
+            {"type": "slack", "channel": "#auth-alerts", "priority": "warning", "min_severity": IncidentSeverity.MEDIUM.value},
+            {"type": "pagerduty", "service_key": "pd_auth_critical", "priority": "critical", "min_severity": IncidentSeverity.CRITICAL.value}
+        ],
+        "payments-api": [
+            {"type": "slack", "channel": "#payments-alerts", "priority": "warning", "min_severity": IncidentSeverity.MEDIUM.value},
+            {"type": "email", "list": "payments-devs@example.com", "priority": "high", "min_severity": IncidentSeverity.HIGH.value},
+            {"type": "pagerduty", "service_key": "pd_payments_critical", "priority": "critical", "min_severity": IncidentSeverity.CRITICAL.value}
+        ],
+        "default": [ # Fallback routing if no service-specific config found
+            {"type": "slack", "channel": "#general-alerts", "priority": "info", "min_severity": IncidentSeverity.LOW.value},
+            {"type": "pagerduty", "service_key": "pd_general_high", "priority": "high", "min_severity": IncidentSeverity.HIGH.value}
+        ]
+    }
+
+    # New: Mock remediation templates config
+    # Based on schema: remediation_templates(id, name, template_text, conditions_json)
+    self.remediation_templates_config: List[Dict[str, Any]] = [
+        {
+            "id": "pii_critical_breach",
+            "name": "PII Critical Breach Template",
+            "template_text": textwrap.dedent("""
+                🚨 CRITICAL PII BREACH DETECTED in {service}! 🚨
+                Severity: {severity}
+                Details: {redacted_snippet}
+                Trace ID: {trace_id}
+                Suggested Remediation: Investigate immediately. Suggested patch URL: {suggested_patch_url}
+                Team: @security-oncall
+                {% if pii_category == 'credential' %}
+                ACTION REQUIRED: Rotate affected credentials.
+                {% endif %}
+            """).strip(),
+            "conditions_json": {"min_severity": IncidentSeverity.CRITICAL.value, "pii_involved": True}
+        },
+        {
+            "id": "high_error_rate",
+            "name": "High Error Rate Template",
+            "template_text": textwrap.dedent("""
+                🔥 HIGH ERROR RATE in {service} ({severity}) 🔥
+                Description: {description}
+                Affected Services: {service}
+                Trace ID: {trace_id}
+                Suggested Remediation: Check recent deployments or service dependencies.
+                Dashboard: [Link to {service} Dashboard]
+            """).strip(),
+            "conditions_json": {"min_severity": IncidentSeverity.HIGH.value, "category_keyword": "error rate"}
+        },
+        {
+            "id": "default_incident",
+            "name": "Default Incident Template",
+            "template_text": textwrap.dedent("""
+                ⚠️ New Incident in {service} ({severity}) ⚠️
+                Title: {title}
+                Description: {description}
+                Trace ID: {trace_id}
+                Suggested Remediation: Review logs and recent changes for {service}.
+            """).strip(),
+            "conditions_json": {"min_severity": IncidentSeverity.LOW.value} # Default, lowest priority
+        }
+    ]
     
     def process(self, data: dict) -> dict:
         """
@@ -289,12 +371,17 @@ class IncidentAgent(BaseAgent):
         incident_id = f"incident-{datetime.utcnow().strftime('%Y%m%d')}-{str(uuid.uuid4())[:8]}"
         now = datetime.utcnow()
         
-        # Determine escalation
-        escalation_channel = None
-        if severity in [IncidentSeverity.CRITICAL, IncidentSeverity.HIGH]:
-            escalation_channel = EscalationChannel.PAGERDUTY if severity == IncidentSeverity.CRITICAL else EscalationChannel.SLACK
-        
         incident = Incident(
+            # Note: `models.py` is not provided. We assume `Incident` dataclass
+            # can accept additional attributes or they are defined in models.py.
+            # For this change, we dynamically add 'redacted_snippet', 'trace_id',
+            # 'suggested_patch_url', and 'escalated_to' for templating and routing purposes.
+            # In a real system, these would be explicitly defined fields in models.py.
+            # The `escalation_channel` field will be set to the highest priority
+            # channel from the dynamically determined destinations, or left None if no destinations.
+            # The full list of destinations will be stored in `incident.escalated_to`.
+
+            # Existing fields
             id=incident_id,
             created_at=now,
             updated_at=now,
@@ -306,8 +393,14 @@ class IncidentAgent(BaseAgent):
             alert_ids=alert_ids,
             alert_count=len(alert_ids),
             pii_involved=pii_involved,
-            pii_category=pii_category,
-            escalation_channel=escalation_channel,
+            pii_category=pii_category, 
+            escalation_channel=None, # This will be set dynamically during escalation based on selected route
+
+            # Dynamically added attributes (assume models.py supports these or they are added as runtime attributes)
+            redacted_snippet=self._get_redacted_snippet(alert_ids),
+            trace_id=self._get_trace_id(alert_ids), # Mocked or derived from alert data
+            suggested_patch_url=None, # This would come from RemediationAgent if a fix PR was generated
+            escalated_to=[], # To store all channels alert is sent to
             events=[
                 {
                     "timestamp": now.isoformat(),
@@ -316,8 +409,120 @@ class IncidentAgent(BaseAgent):
                 }
             ]
         )
-        
         return incident
+    
+    def _get_redacted_snippet(self, alert_ids: List[str]) -> str:
+        """Retrieves a redacted snippet from the alerts in the incident queue."""
+        if not alert_ids:
+            return "No specific snippet available."
+        
+        # Find the first alert message from the queue that matches an alert_id
+        for alert_id in alert_ids:
+            for correlation in self.incident_queue:
+                if correlation.alert_id == alert_id:
+                    # Assume correlation.message is already redacted by PrivacyAgent
+                    return correlation.message[:200].replace('\n', ' ') # Take first 200 chars as snippet, clean newlines
+        return "No specific snippet available."
+
+    def _get_trace_id(self, alert_ids: List[str]) -> Optional[str]:
+        """Mocks retrieving a trace ID from associated alerts."""
+        # In a real system, this would extract trace_id from alert metadata
+        if alert_ids:
+            # Example: return a pseudo trace ID derived from the first alert_id
+            return f"trace-{alert_ids[0][:8]}"
+        return None
+
+    def _select_and_render_template(self, incident: Incident) -> str:
+        """Selects the highest-priority applicable template and populates placeholders."""
+        
+        applicable_templates = []
+        for template_conf in self.remediation_templates_config:
+            conditions = template_conf.get("conditions_json", {})
+            is_applicable = True
+            
+            # Check severity condition
+            min_severity_str = conditions.get("min_severity")
+            if min_severity_str and self.SEVERITY_RANK[incident.severity.value] < self.SEVERITY_RANK[min_severity_str]:
+                is_applicable = False
+
+            # Check pii_involved condition
+            if "pii_involved" in conditions and conditions["pii_involved"] != incident.pii_involved:
+                is_applicable = False
+            
+            # Check category keyword condition (simplified, could be more robust)
+            category_keyword = conditions.get("category_keyword")
+            if category_keyword and category_keyword.lower() not in incident.title.lower() and category_keyword.lower() not in incident.description.lower():
+                is_applicable = False
+
+            if is_applicable:
+                applicable_templates.append(template_conf)
+        
+        # Sort by implied priority (higher severity conditions first, or order in config)
+        # For simplicity, assume order in self.remediation_templates_config defines priority.
+        # The first applicable template found is the "highest priority".
+        if not applicable_templates:
+            return "No remediation template found for this incident. Please check configuration."
+        
+        selected_template = applicable_templates[0] # Take the first one as highest priority by config order
+
+        # Prepare context for template rendering
+        template_context = {
+            "service": ", ".join(incident.affected_services) if incident.affected_services else "unknown-service",
+            "severity": incident.severity.value,
+            "title": incident.title,
+            "description": incident.description,
+            "redacted_snippet": getattr(incident, 'redacted_snippet', 'N/A'),
+            "trace_id": getattr(incident, 'trace_id', 'N/A'),
+            "suggested_patch_url": getattr(incident, 'suggested_patch_url', 'N/A'),
+            "pii_involved": incident.pii_involved,
+            "pii_category": incident.pii_category if incident.pii_category else 'N/A',
+            # Add other relevant incident fields as needed
+        }
+
+        # Render template, handling conditional blocks (simplified for f-string capability)
+        rendered_text = selected_template["template_text"]
+        
+        # Simple conditional block processing (for demonstration, a full templating engine like Jinja2 is better)
+        # This example handles {% if condition %}...{% endif %} for `pii_category == 'credential'`
+        if "{% if pii_category == 'credential' %}" in rendered_text:
+            if template_context.get("pii_category") == "credential":
+                rendered_text = rendered_text.replace("{% if pii_category == 'credential' %}", "").replace("{% endif %}", "")
+            else:
+                # Remove the block if condition not met
+                rendered_text = re.sub(r"{% if pii_category == 'credential' %}.*?{% endif %}", "", rendered_text, flags=re.DOTALL)
+
+        try:
+            return rendered_text.format(**template_context)
+        except KeyError as e:
+            return f"Error rendering template '{selected_template.get('name', selected_template['id'])}': Missing placeholder {e}."
+        except Exception as e:
+            return f"Unexpected error rendering template '{selected_template.get('name', selected_template['id'])}': {e}."
+
+    def _get_service_routing_config(self, service_name: str, severity: IncidentSeverity) -> List[Dict[str, Any]]:
+        """
+        Retrieves alert routing destinations for a given service and severity.
+        Prioritizes service-specific configurations, then falls back to default.
+        """
+        
+        applicable_routes = []
+        
+        # Check service-specific config, then fall back to default
+        service_routes = self.service_alert_routing_config.get(service_name, [])
+        if not service_routes:
+            service_routes = self.service_alert_routing_config.get("default", [])
+
+        # Filter by minimum severity
+        current_severity_rank = self.SEVERITY_RANK[severity.value]
+        for route in service_routes:
+            min_severity_str = route.get("min_severity", IncidentSeverity.LOW.value)
+            if current_severity_rank >= self.SEVERITY_RANK[min_severity_str]:
+                applicable_routes.append(route)
+        
+        # Sort by priority (e.g., critical > high > warning > info)
+        # Assuming "min_severity" reflects priority in descending order
+        applicable_routes.sort(key=lambda r: self.SEVERITY_RANK[r.get("min_severity", IncidentSeverity.LOW.value)], reverse=True)
+
+        return applicable_routes
     
     def _infer_severity(self, alerts: list[AlertCorrelation]) -> IncidentSeverity:
         """Infer incident severity from alerts."""
@@ -341,22 +546,84 @@ class IncidentAgent(BaseAgent):
         # In production: merge incidents with same affected services within time window
         return incidents
     
+    def _simulate_delivery(self, destination: Dict[str, Any], message: str) -> bool:
+        """Simulates sending an alert to a destination."""
+        # print(f"  Attempting delivery to {destination['type']} ({destination.get('channel') or destination.get('list') or destination.get('service_key')})...")
+        
+        # Simulate failure for PagerDuty critical alerts 10% of the time
+        if destination["type"] == "pagerduty" and destination.get("min_severity") == IncidentSeverity.CRITICAL.value and uuid.uuid4().int % 10 == 0:
+            print(f"  Simulated PagerDuty CRITICAL delivery FAILURE for {destination['service_key']}")
+            return False
+        
+        # Simulate failure for other types 5% of the time
+        if uuid.uuid4().int % 20 == 0:
+            print(f"  Simulated {destination['type']} delivery FAILURE.")
+            return False
+        
+        # print(f"  Delivered to {destination['type']} successfully.")
+        return True
+
     def _escalate_incident(self, incident: Incident) -> None:
-        """Escalate incident to appropriate channel."""
-        if not incident.escalation_channel:
+        """Escalate incident to appropriate channels based on per-service config and templates."""
+        
+        # Render remediation text for the incident using the highest priority template
+        remediation_message = self._select_and_render_template(incident)
+
+        # Get routing configuration for the primary affected service
+        primary_service = incident.affected_services[0] if incident.affected_services else "default"
+        destinations = self._get_service_routing_config(primary_service, incident.severity)
+        
+        if not destinations:
+            print(f"No escalation routes configured for service '{primary_service}' with severity '{incident.severity.value}'.")
             return
         
+        incident.escalated_to = [] # Clear previous, if any, and prepare to track all attempts
+        
+        # Iterate through all applicable destinations and attempt delivery
+        delivery_successful_to_any = False
+        for dest in destinations:
+            destination_identifier = f"{dest['type']}:{dest.get('channel') or dest.get('list') or dest.get('service_key')}"
+            incident.escalated_to.append(destination_identifier)
+            
+            delivery_successful = False
+            for attempt in range(3): # Retry 3 times with exponential backoff
+                print(f"  Attempting delivery to {destination_identifier} (Attempt {attempt+1})...")
+                if self._simulate_delivery(dest, remediation_message):
+                    print(f"  Delivered to {destination_identifier} successfully.")
+                    delivery_successful = True
+                    delivery_successful_to_any = True
+                    break
+                else:
+                    backoff_time = 0.2 * (2 ** attempt) # Exponential backoff: 200ms, 400ms, 800ms
+                    print(f"  Delivery failed to {destination_identifier}. Retrying in {backoff_time:.1f}s...")
+                    # In a real system, you'd use time.sleep(backoff_time)
+            
+            if not delivery_successful:
+                print(f"  Final delivery failure for {destination_identifier}. Logging to alerts_failures table (mocked).")
+                # Log failure to a persistent store (e.g., 'alerts_failures' table)
+                self.event_bus.publish(Event(
+                    event_type=EventType.ALERT_DELIVERY_FAILED,
+                    source_agent=self.name,
+                    timestamp=datetime.utcnow(),
+                    data={
+                        "incident_id": incident.id,
+                        "destination": dest,
+                        "reason": "Max retries exceeded",
+                        "message": remediation_message
+                    },
+                    severity=incident.severity.value
+                ))
+                
+                # Check for PagerDuty critical fallback to a webhook
+                if dest["type"] == "pagerduty" and dest.get("min_severity") == IncidentSeverity.CRITICAL.value:
+                    print("  PagerDuty CRITICAL alert failed, escalating to fallback webhook (mocked).")
+                    # Send to a fallback webhook
+                    # requests.post("https://fallback.webhook.example.com/critical", json={"incident_id": incident.id, "message": remediation_message})
+
+        # Update incident object's escalation status
         incident.escalated_at = datetime.utcnow()
-        
-        # In production, integrate with actual services
-        channel_names = {
-            EscalationChannel.PAGERDUTY: "@pagerduty-oncall",
-            EscalationChannel.SLACK: "@incident-channel",
-            EscalationChannel.EMAIL: "incident-alert@company.com",
-            EscalationChannel.SMS: "emergency-team"
-        }
-        
-        incident.escalated_to = [channel_names.get(incident.escalation_channel, "unknown")]
+        incident.escalation_channel = EscalationChannel[destinations[0]["type"].upper()] if delivery_successful_to_any else None # Set to highest priority type if any delivery was successful
+        incident.description = f"{incident.description}\n\n--- Remediation Guidance ---\n{remediation_message}" # Append templated remediation to description
         
         # Publish escalation event
         self.event_bus.publish(Event(
@@ -365,7 +632,7 @@ class IncidentAgent(BaseAgent):
             timestamp=datetime.utcnow(),
             data={
                 "incident_id": incident.id,
-                "channel": incident.escalation_channel.value,
+                "escalation_details": incident.escalated_to,
                 "escalated_to": incident.escalated_to
             },
             severity=incident.severity.value
