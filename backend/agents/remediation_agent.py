@@ -1,6 +1,7 @@
 import os
 import json
 import re
+import requests
 import uuid
 from dataclasses import dataclass
 from pathlib import Path
@@ -33,6 +34,8 @@ class PullRequest:
     diff: str
     fix_type: str
     github_url: Optional[str] = None
+    jira_issue_id: Optional[str] = None
+    jira_url: Optional[str] = None
     created_at: Optional[str] = None
 
 
@@ -48,6 +51,7 @@ class RemediationAgent:
         
         self.enable_llm = os.getenv("ENABLE_LLM_DETECTION", "false").lower() == "true"
         self.enable_github = os.getenv("ENABLE_GITHUB_INTEGRATION", "false").lower() == "true"
+        self.enable_jira = os.getenv("ENABLE_JIRA_INTEGRATION", "false").lower() == "true"
         self.model_name = os.getenv("GEMINI_MODEL", "gemini-1.5-pro")
         self.client = None
         
@@ -72,9 +76,19 @@ class RemediationAgent:
             try:
                 self.github = Github(os.getenv("GITHUB_TOKEN", ""))
             except Exception:
+                # Could add logging here: print(f"Failed to initialize GitHub client: {e}")
                 self.github = None
         else:
             self.github = None
+            
+        if self.enable_jira:
+            self.jira_api_url = os.getenv("JIRA_API_URL")
+            self.jira_project_key = os.getenv("JIRA_PROJECT_KEY")
+            self.jira_user = os.getenv("JIRA_USER")
+            self.jira_api_token = os.getenv("JIRA_API_TOKEN")
+            self.jira_client_configured = all([self.jira_api_url, self.jira_project_key, self.jira_user, self.jira_api_token])
+        else:
+            self.jira_client_configured = False
 
     def _make_diff(self, before: str, after: str) -> str:
         lines = []
@@ -159,6 +173,10 @@ Guidelines:
         # Try to create real GitHub PR if enabled
         if self.enable_github and self.github:
             pr = self._create_github_pr(pr)
+            
+        # Try to create/link Jira issue if enabled
+        if self.enable_jira and self.jira_client_configured:
+            pr = self._create_jira_issue(pr)
         
         return pr
 
@@ -193,6 +211,10 @@ Guidelines:
         # Try to create real GitHub PR if enabled
         if self.enable_github and self.github:
             pr = self._create_github_pr(pr)
+            
+        # Try to create/link Jira issue if enabled
+        if self.enable_jira and self.jira_client_configured:
+            pr = self._create_jira_issue(pr)
         
         return pr
 
@@ -256,6 +278,52 @@ Guidelines:
             return pr
         except Exception as e:
             # GitHub PR creation failed, return mock PR
+            return pr
+
+    def _create_jira_issue(self, pr: PullRequest) -> PullRequest:
+        """Create a Jira issue and link it to the PR."""
+        if not self.jira_client_configured:
+            return pr
+        
+        try:
+            headers = {
+                "Content-Type": "application/json",
+                "Authorization": f"Basic {requests.utils.to_native_string(requests.utils.base64.b64encode(f'{self.jira_user}:{self.jira_api_token}'.encode('utf-8')))}"
+            }
+            
+            description_body = (
+                f"LogGuard AI has detected a `{pr.fix_type.upper()}` issue and created an automated fix.\n\n"
+                f"* **Title:** {pr.title}\n"
+                f"* **Service:** {pr.service}\n"
+                f"* **File:** {pr.file_path} (Line {pr.line_number})\n"
+                f"* **Proposed Branch:** {pr.branch}\n"
+                f"* **Diff:**\n{{code:diff}}\n{pr.diff}\n{{code}}\n"
+            )
+            
+            if pr.github_url:
+                description_body += f"* **GitHub Pull Request:** {pr.github_url}\n"
+            
+            payload = {
+                "fields": {
+                    "project": {
+                        "key": self.jira_project_key
+                    },
+                    "summary": pr.title,
+                    "description": description_body,
+                    "issuetype": {
+                        "name": "Task" # Can be configured to "Bug", "Story", etc.
+                    }
+                }
+            }
+            
+            response = requests.post(f"{self.jira_api_url}/rest/api/2/issue", headers=headers, json=payload, timeout=5)
+            response.raise_for_status() # Raise an exception for HTTP errors (4xx or 5xx)
+            jira_data = response.json()
+            pr.jira_issue_id = jira_data.get("key")
+            pr.jira_url = f"{self.jira_api_url}/browse/{jira_data.get('key')}"
+            return pr
+        except Exception as e:
+            print(f"Failed to create Jira issue: {e}")
             return pr
 
     def analyze_root_cause(self, logs: list[str]) -> dict:
