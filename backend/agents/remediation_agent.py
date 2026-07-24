@@ -3,9 +3,11 @@ import json
 import re
 import uuid
 from dataclasses import dataclass
+from datetime import datetime
 from pathlib import Path
 from typing import Optional
 
+from agents.event_bus import get_event_bus, Event, EventType
 try:
     import google.generativeai as genai
     GEMINI_AVAILABLE = True
@@ -34,6 +36,8 @@ class PullRequest:
     fix_type: str
     github_url: Optional[str] = None
     created_at: Optional[str] = None
+    jira_issue_id: Optional[str] = None
+    jira_url: Optional[str] = None
 
 
 class RemediationAgent:
@@ -48,6 +52,7 @@ class RemediationAgent:
         
         self.enable_llm = os.getenv("ENABLE_LLM_DETECTION", "false").lower() == "true"
         self.enable_github = os.getenv("ENABLE_GITHUB_INTEGRATION", "false").lower() == "true"
+        self.enable_jira = os.getenv("ENABLE_JIRA_INTEGRATION", "false").lower() == "true"
         self.model_name = os.getenv("GEMINI_MODEL", "gemini-1.5-pro")
         self.client = None
         
@@ -73,6 +78,7 @@ class RemediationAgent:
                 self.github = Github(os.getenv("GITHUB_TOKEN", ""))
             except Exception:
                 self.github = None
+        self.event_bus = get_event_bus()
         else:
             self.github = None
 
@@ -160,6 +166,21 @@ Guidelines:
         if self.enable_github and self.github:
             pr = self._create_github_pr(pr)
         
+        # Request Jira issue creation if enabled
+        if self.enable_jira:
+            self.event_bus.publish(Event(
+                event_type=EventType.JIRA_ISSUE_REQUESTED,
+                source_agent=self.__class__.__name__,
+                timestamp=datetime.utcnow(),
+                data={
+                    "pr_id": pr.id,
+                    "title": pr.title,
+                    "description": f"LogGuard AI detected PII/credential leakage and generated a remediation PR.\nGitHub PR: {pr.github_url or 'N/A'}\n\n```diff\n{pr.diff}\n```",
+                    "project_key": os.getenv("JIRA_PROJECT_KEY", "LG"), # Default project key
+                    "issue_type": os.getenv("JIRA_ISSUE_TYPE", "Task"), # Default issue type
+                },
+                correlation_id=pr.id
+            ))
         return pr
 
     def remediate_log(
@@ -193,6 +214,22 @@ Guidelines:
         # Try to create real GitHub PR if enabled
         if self.enable_github and self.github:
             pr = self._create_github_pr(pr)
+            
+        # Request Jira issue creation if enabled
+        if self.enable_jira:
+            self.event_bus.publish(Event(
+                event_type=EventType.JIRA_ISSUE_REQUESTED,
+                source_agent=self.__class__.__name__,
+                timestamp=datetime.utcnow(),
+                data={
+                    "pr_id": pr.id,
+                    "title": pr.title,
+                    "description": f"LogGuard AI detected a noisy logging pattern and generated a remediation PR.\nGitHub PR: {pr.github_url or 'N/A'}\n\n```diff\n{pr.diff}\n```",
+                    "project_key": os.getenv("JIRA_PROJECT_KEY", "LG"),
+                    "issue_type": os.getenv("JIRA_ISSUE_TYPE", "Task"),
+                },
+                correlation_id=pr.id
+            ))
         
         return pr
 

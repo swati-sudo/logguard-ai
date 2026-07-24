@@ -32,6 +32,9 @@ class EventType(str, Enum):
     # Reporting events
     REPORT_GENERATED = "report.generated"
 
+    # Jira integration events
+    JIRA_ISSUE_REQUESTED = "jira.issue.requested"
+
 
 @dataclass
 class Event:
