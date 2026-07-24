@@ -33,6 +33,7 @@ class PullRequest:
     diff: str
     fix_type: str
     github_url: Optional[str] = None
+    jira_ticket_url: Optional[str] = None
     created_at: Optional[str] = None
 
 
@@ -48,6 +49,7 @@ class RemediationAgent:
         
         self.enable_llm = os.getenv("ENABLE_LLM_DETECTION", "false").lower() == "true"
         self.enable_github = os.getenv("ENABLE_GITHUB_INTEGRATION", "false").lower() == "true"
+        self.enable_jira = os.getenv("ENABLE_JIRA_INTEGRATION", "false").lower() == "true"
         self.model_name = os.getenv("GEMINI_MODEL", "gemini-1.5-pro")
         self.client = None
         
@@ -73,6 +75,11 @@ class RemediationAgent:
                 self.github = Github(os.getenv("GITHUB_TOKEN", ""))
             except Exception:
                 self.github = None
+        
+        if self.enable_jira:
+            self.jira_url = os.getenv("JIRA_URL")
+            self.jira_project_key = os.getenv("JIRA_PROJECT_KEY")
+            # A Jira client would be initialized here if a suitable library was available.
         else:
             self.github = None
 
@@ -160,6 +167,10 @@ Guidelines:
         if self.enable_github and self.github:
             pr = self._create_github_pr(pr)
         
+        # Try to create Jira ticket if enabled
+        if self.enable_jira:
+            pr = self._create_jira_ticket(pr)
+        
         return pr
 
     def remediate_log(
@@ -193,6 +204,10 @@ Guidelines:
         # Try to create real GitHub PR if enabled
         if self.enable_github and self.github:
             pr = self._create_github_pr(pr)
+        
+        # Try to create Jira ticket if enabled
+        if self.enable_jira:
+            pr = self._create_jira_ticket(pr)
         
         return pr
 
@@ -258,6 +273,26 @@ Guidelines:
             # GitHub PR creation failed, return mock PR
             return pr
 
+    def _create_jira_ticket(self, pr: PullRequest) -> PullRequest:
+        """
+        Creates a Jira ticket for the remediation action.
+        This is a placeholder as no Jira client library is provided in the context.
+        """
+        if not self.enable_jira:
+            return pr
+        
+        # In a real scenario, this method would use a Jira API client to:
+        # 1. Authenticate with Jira using JIRA_URL and JIRA_API_TOKEN.
+        # 2. Create a new issue in the JIRA_PROJECT_KEY project.
+        # 3. Populate the issue with information from the PullRequest (title, description).
+        # 4. Potentially link the created GitHub PR to the Jira ticket.
+        
+        print(f"Jira integration enabled. Would create ticket for PR: '{pr.title}' in project '{self.jira_project_key}'")
+        
+        if self.jira_url and self.jira_project_key:
+            pr.jira_ticket_url = f"{self.jira_url}/browse/{self.jira_project_key}-{pr.id}"
+        
+        return pr
     def analyze_root_cause(self, logs: list[str]) -> dict:
         """Use LLM to find root cause from log sequence"""
         if not self.client or len(logs) == 0:
