@@ -33,6 +33,8 @@ class PullRequest:
     diff: str
     fix_type: str
     github_url: Optional[str] = None
+    jira_url: Optional[str] = None
+    jira_issue_id: Optional[str] = None
     created_at: Optional[str] = None
 
 
@@ -48,6 +50,7 @@ class RemediationAgent:
         
         self.enable_llm = os.getenv("ENABLE_LLM_DETECTION", "false").lower() == "true"
         self.enable_github = os.getenv("ENABLE_GITHUB_INTEGRATION", "false").lower() == "true"
+        self.enable_jira = os.getenv("ENABLE_JIRA_INTEGRATION", "false").lower() == "true"
         self.model_name = os.getenv("GEMINI_MODEL", "gemini-1.5-pro")
         self.client = None
         
@@ -73,6 +76,9 @@ class RemediationAgent:
                 self.github = Github(os.getenv("GITHUB_TOKEN", ""))
             except Exception:
                 self.github = None
+        elif self.enable_jira: # Even if github is disabled, Jira might need these for linking
+            pass # Jira integration typically relies on other data, no direct github dependency here
+
         else:
             self.github = None
 
@@ -160,6 +166,10 @@ Guidelines:
         if self.enable_github and self.github:
             pr = self._create_github_pr(pr)
         
+        # Try to link to Jira if enabled
+        if self.enable_jira:
+            pr = self._link_to_jira(pr)
+        
         return pr
 
     def remediate_log(
@@ -193,6 +203,10 @@ Guidelines:
         # Try to create real GitHub PR if enabled
         if self.enable_github and self.github:
             pr = self._create_github_pr(pr)
+
+        # Try to link to Jira if enabled
+        if self.enable_jira:
+            pr = self._link_to_jira(pr)
         
         return pr
 
@@ -257,6 +271,35 @@ Guidelines:
         except Exception as e:
             # GitHub PR creation failed, return mock PR
             return pr
+
+    def _link_to_jira(self, pr: PullRequest) -> PullRequest:
+        """
+        Links the generated PR to a Jira issue.
+        This method would typically use a Jira API client, but due to constraints,
+        it will primarily set a placeholder Jira URL for now.
+        """
+        if not self.enable_jira:
+            return pr
+
+        # In a real scenario, this would involve creating a Jira issue or linking to one.
+        # For now, we simulate a link based on environment variables.
+        jira_base_url = os.getenv("JIRA_BASE_URL", "https://your-jira-instance.atlassian.net")
+        jira_project_key = os.getenv("JIRA_PROJECT_KEY", "LOGGUARD")
+        jira_api_token = os.getenv("JIRA_API_TOKEN") # Not directly used for linking here due to constraints
+
+        if not jira_project_key or not jira_base_url:
+            print("Jira integration enabled but JIRA_BASE_URL or JIRA_PROJECT_KEY not set.")
+            return pr
+
+        # Derive a sensible Jira issue key suffix from the PR branch name
+        jira_issue_suffix = pr.branch.replace('logguard/', '').replace('/', '-')
+        
+        pr.jira_issue_id = f"{jira_project_key}-{jira_issue_suffix}"
+        pr.jira_url = f"{jira_base_url}/browse/{pr.jira_issue_id}"
+
+        # A real implementation would make API calls here to create/link the issue.
+
+        return pr
 
     def analyze_root_cause(self, logs: list[str]) -> dict:
         """Use LLM to find root cause from log sequence"""
