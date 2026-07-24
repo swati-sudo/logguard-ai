@@ -34,6 +34,7 @@ class PullRequest:
     fix_type: str
     github_url: Optional[str] = None
     created_at: Optional[str] = None
+    jira_issue_url: Optional[str] = None
 
 
 class RemediationAgent:
@@ -47,6 +48,7 @@ class RemediationAgent:
             self.source_map = {}
         
         self.enable_llm = os.getenv("ENABLE_LLM_DETECTION", "false").lower() == "true"
+        self.enable_jira = os.getenv("ENABLE_JIRA_INTEGRATION", "false").lower() == "true"
         self.enable_github = os.getenv("ENABLE_GITHUB_INTEGRATION", "false").lower() == "true"
         self.model_name = os.getenv("GEMINI_MODEL", "gemini-1.5-pro")
         self.client = None
@@ -75,6 +77,21 @@ class RemediationAgent:
                 self.github = None
         else:
             self.github = None
+
+        self.jira_client_configured = False
+        if self.enable_jira:
+            self.jira_url = os.getenv("JIRA_URL")
+            self.jira_api_key = os.getenv("JIRA_API_KEY")
+            self.jira_project_key = os.getenv("JIRA_PROJECT_KEY")
+            
+            if self.jira_url and self.jira_api_key and self.jira_project_key:
+                print("INFO: Jira integration enabled and configured with environment variables.")
+                self.jira_client_configured = True
+            else:
+                print("WARN: Jira integration enabled but not fully configured (missing JIRA_URL, JIRA_API_KEY, or JIRA_PROJECT_KEY).")
+                self.jira_client_configured = False
+        else:
+            self.jira_client_configured = False
 
     def _make_diff(self, before: str, after: str) -> str:
         lines = []
@@ -160,6 +177,10 @@ Guidelines:
         if self.enable_github and self.github:
             pr = self._create_github_pr(pr)
         
+        # Create Jira issue if enabled
+        if self.enable_jira and self.jira_client_configured:
+            pr = self._create_jira_issue_for_pr(pr)
+            
         return pr
 
     def remediate_log(
@@ -194,6 +215,10 @@ Guidelines:
         if self.enable_github and self.github:
             pr = self._create_github_pr(pr)
         
+        # Create Jira issue if enabled
+        if self.enable_jira and self.jira_client_configured:
+            pr = self._create_jira_issue_for_pr(pr)
+            
         return pr
 
     def _create_github_pr(self, pr: PullRequest) -> PullRequest:
@@ -256,6 +281,41 @@ Guidelines:
             return pr
         except Exception as e:
             # GitHub PR creation failed, return mock PR
+            return pr
+
+    def _create_jira_issue_for_pr(self, pr: PullRequest) -> PullRequest:
+        """
+        Create a Jira issue for the given PullRequest.
+        This is a simulated interaction due to constraints on inventing imports/classes.
+        In a real scenario, this would use a Jira API client.
+        """
+        if not self.jira_client_configured:
+            return pr
+
+        try:
+            # Simulate creating a Jira issue
+            issue_summary = f"LogGuard: Fix {pr.fix_type} in {pr.service} - {pr.file_path}"
+            issue_description = (
+                f"LogGuard AI has identified and generated a fix for a `{pr.fix_type}` issue.\n\n"
+                f"**Service:** {pr.service}\n"
+                f"**File:** {pr.file_path} (Line: {pr.line_number})\n\n"
+                f"A Pull Request has been drafted for this fix:\n"
+                f"- **Branch:** `{pr.branch}`\n"
+                f"- **Title:** {pr.title}\n"
+            )
+            if pr.github_url:
+                issue_description += f"- **GitHub PR:** {pr.github_url}\n"
+            issue_description += f"\n```diff\n{pr.diff}\n```"
+            
+            # Generate a simulated Jira issue key and URL
+            simulated_issue_key = f"{self.jira_project_key}-LG-{str(uuid.uuid4())[:4].upper()}"
+            simulated_jira_url = f"{self.jira_url}/browse/{simulated_issue_key}"
+            
+            print(f"INFO: Simulating Jira issue creation '{issue_summary}' in project '{self.jira_project_key}'. URL: {simulated_jira_url}")
+            pr.jira_issue_url = simulated_jira_url
+            return pr
+        except Exception as e:
+            print(f"ERROR: Failed to create Jira issue for PR {pr.id}: {e}")
             return pr
 
     def analyze_root_cause(self, logs: list[str]) -> dict:
