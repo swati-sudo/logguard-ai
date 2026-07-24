@@ -34,6 +34,7 @@ class PullRequest:
     fix_type: str
     github_url: Optional[str] = None
     created_at: Optional[str] = None
+    jira_issue_url: Optional[str] = None
 
 
 class RemediationAgent:
@@ -48,6 +49,8 @@ class RemediationAgent:
         
         self.enable_llm = os.getenv("ENABLE_LLM_DETECTION", "false").lower() == "true"
         self.enable_github = os.getenv("ENABLE_GITHUB_INTEGRATION", "false").lower() == "true"
+        self.enable_jira = os.getenv("ENABLE_JIRA_INTEGRATION", "false").lower() == "true"
+        self.jira_project_key = os.getenv("JIRA_PROJECT_KEY", "LOGGUARD")
         self.model_name = os.getenv("GEMINI_MODEL", "gemini-1.5-pro")
         self.client = None
         
@@ -73,6 +76,7 @@ class RemediationAgent:
                 self.github = Github(os.getenv("GITHUB_TOKEN", ""))
             except Exception:
                 self.github = None
+        self.jira_base_url = os.getenv("JIRA_BASE_URL", "https://your-jira-instance.atlassian.net")
         else:
             self.github = None
 
@@ -159,6 +163,10 @@ Guidelines:
         # Try to create real GitHub PR if enabled
         if self.enable_github and self.github:
             pr = self._create_github_pr(pr)
+            
+        # Try to create Jira issue if enabled
+        if self.enable_jira:
+            pr = self._create_jira_issue(pr)
         
         return pr
 
@@ -193,6 +201,10 @@ Guidelines:
         # Try to create real GitHub PR if enabled
         if self.enable_github and self.github:
             pr = self._create_github_pr(pr)
+            
+        # Try to create Jira issue if enabled
+        if self.enable_jira:
+            pr = self._create_jira_issue(pr)
         
         return pr
 
@@ -256,6 +268,27 @@ Guidelines:
             return pr
         except Exception as e:
             # GitHub PR creation failed, return mock PR
+            return pr
+
+    def _create_jira_issue(self, pr: PullRequest) -> PullRequest:
+        """Simulate creating a Jira issue and link to PR."""
+        if not self.enable_jira:
+            return pr
+        
+        try:
+            # In a real implementation, this would involve a Jira API call
+            # e.g., using a 'jira' library to create an issue.
+            # For now, we'll generate a mock URL and print a message.
+            issue_key = f"{self.jira_project_key}-{str(uuid.uuid4())[:4].upper()}"
+            mock_jira_url = f"{self.jira_base_url}/browse/{issue_key}"
+            
+            pr.jira_issue_url = mock_jira_url
+            print(f"INFO: Mock Jira issue created: {mock_jira_url} for PR {pr.id}")
+            # In a real scenario, you might also update the Jira issue description
+            # to include the GitHub PR link (pr.github_url) if it exists.
+            return pr
+        except Exception as e:
+            print(f"WARNING: Failed to create mock Jira issue for PR {pr.id}: {e}")
             return pr
 
     def analyze_root_cause(self, logs: list[str]) -> dict:
